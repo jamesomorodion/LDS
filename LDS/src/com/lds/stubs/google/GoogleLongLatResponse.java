@@ -15,10 +15,15 @@ public class GoogleLongLatResponse implements Serializable{
 	private static final long serialVersionUID = -9074974207533971299L;
 	private List<GoogleLongLatAddr> results;
 	private String status;
+	private String message;
 	
 	
-	
-	
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}	
 	public List<GoogleLongLatAddr> getResults() {
 		if(results == null)
 		{
