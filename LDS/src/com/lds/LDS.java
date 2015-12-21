@@ -17,8 +17,7 @@ public class LDS {
 	
 	public Client client;
 	public WebResource webResource;
-//	https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452
-	public final String GOOGLE_GEOLOC_LONG_LAT = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
+	
 	
 	public LDS()
 	{
@@ -36,20 +35,20 @@ public class LDS {
 	@GET
 	@Path("/get/lat/lng/{lat}/{lng}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public GoogleLongLatResponse getZip(@PathParam("lat")String lat, @PathParam("lng")String lng)
+	public GoogleLongLatResponse getLocation(@PathParam("lat")String lat, @PathParam("lng")String lng)
 	{
 		System.out.println("**************Lng and Lat: " + lng + "," + lat);
 		
 		String address = null;
 		GoogleLongLatResponse response = null;
 		client = Client.create();
-		webResource = client.resource(GOOGLE_GEOLOC_LONG_LAT + lat + "," + lng);
+		webResource = client.resource(LDSConstants.GOOGLE_GEOLOC_LONG_LAT + lat + "," + lng);
 		
 		response = webResource.type(MediaType.APPLICATION_JSON).get(GoogleLongLatResponse.class);
 		for(GoogleLongLatAddr adr : response.getResults())
 		{
 			for(String type : adr.getTypes()){
-				if(type != null && LDSConstants.STREET_ADDRESS.equals(type))
+				if(type != null && (LDSConstants.STREET_ADDRESS.equals(type) || LDSConstants.PREMISE.equals(type)))
 				{
 					address = adr.getFormatted_address();
 				}
@@ -58,6 +57,7 @@ public class LDS {
 		
 		String msg = "For Longitude: " + lng + " Latitude: " + lat + ", your address is: " + address;
 		
+		response = new GoogleLongLatResponse();
 		response.setMessage(msg);
 		
 		return response;
